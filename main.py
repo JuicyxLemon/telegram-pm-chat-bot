@@ -27,6 +27,7 @@ LANG = json.loads(open(PATH + 'lang/' + CONFIG['Lang'] + '.json'
 MESSAGE_LOCK = False
 
 message_list = json.loads(open(PATH + 'data.json', 'r').read())  # 加载消息数据
+last_message = None
 
 PREFERENCE_LOCK = False
 
@@ -88,16 +89,24 @@ print('Starting... (ID: ' + str(CONFIG['ID']) + ', Username: ' \
 
 def process_msg(bot, update):  # 处理消息
     global message_list
+    global last_message
     init_user(update.message.from_user)
     if CONFIG['Admin'] == 0:  # 如果未设置管理员
         bot.send_message(chat_id=update.message.from_user.id,
                          text=LANG['please_setup_first'])
         return
     if update.message.from_user.id == CONFIG['Admin']:  # 如果是管理员发送的消息
-        if update.message.reply_to_message:  # 如果未回复消息
-            if str(update.message.reply_to_message.message_id) in message_list:  # 如果消息数据存在
+        if update.message.reply_to_message or last_message:  # 如果回复了一条消息或者有最近接收消息的记录
+            if update.message.reply_to_message and not (str(update.message.reply_to_message.message_id) in message_list):
+				bot.send_message(chat_id=CONFIG['Admin'],
+                                 text=LANG['reply_to_message_no_data'])
+            else:
                 msg = update.message
-                sender_id = message_list[str(update.message.reply_to_message.message_id)]['sender_id']
+                sender_id = None
+                if update.message.reply_to_message:
+                    sender_id = message_list[str(update.message.reply_to_message.message_id)]['sender_id']
+                else:
+                    sender_id = message_list[sender_id]['sender_id']
                 # 匿名转发
                 try:
                     if msg.audio:
@@ -142,9 +151,6 @@ def process_msg(bot, update):  # 处理消息
                             % (preference_list[str(sender_id)]['name'],
                             str(sender_id)),
                             parse_mode=telegram.ParseMode.MARKDOWN)
-            else:
-                bot.send_message(chat_id=CONFIG['Admin'],
-                                 text=LANG['reply_to_message_no_data'])
         else:
             bot.send_message(chat_id=CONFIG['Admin'],
                              text=LANG['reply_to_no_message'])
@@ -166,6 +172,7 @@ def process_msg(bot, update):  # 处理消息
             bot.send_message(chat_id=update.message.from_user.id,text=LANG['message_received_notification'])
         message_list[str(fwd_msg.message_id)] = {}
         message_list[str(fwd_msg.message_id)]['sender_id'] = update.message.from_user.id
+        last_message = str(fwd_msg.message_id)  #记录接收消息的ID作为默认回复ID
         threading.Thread(target=save_data).start()  # 保存消息数据
     pass
 
