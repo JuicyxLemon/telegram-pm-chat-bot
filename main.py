@@ -91,9 +91,6 @@ def process_msg(bot, update):  # 处理消息
 		bot.send_message(chat_id=update.message.from_user.id, text=LANG['please_setup_first'])
 		return
 	if update.message.from_user.id == CONFIG['Admin']:  # 如果是管理员发送的消息
-		# debug
-		print(update.message.reply_to_message)
-		print(last_message)
 		if update.message.reply_to_message or last_message:  # 如果回复了一条消息或者有最近接收消息的记录
 			if update.message.reply_to_message and not (str(update.message.reply_to_message.message_id) in message_list):
 				bot.send_message(chat_id=CONFIG['Admin'], text=LANG['reply_to_message_no_data'])
