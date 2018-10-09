@@ -103,7 +103,7 @@ def process_msg(bot, update):  # 处理消息
 				if update.message.reply_to_message:
 					sender_id = message_list[str(update.message.reply_to_message.message_id)]['sender_id']
 				else:
-					sender_id = message_list[sender_id]['sender_id']
+					sender_id = message_list[last_message]['sender_id']
 				# 匿名转发
 				try:
 					if msg.audio:
