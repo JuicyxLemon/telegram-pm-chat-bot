@@ -2,6 +2,9 @@
 Telegram 私聊机器人
 Telegram Private Message Chat Bot
 
+## Fork
+此 fork 相较原版加入了默认回复功能：如果管理员直接向机器人发送消息，则默认会回复给最近一次向私聊机器人发送消息的用户，这样就省去了在连续聊天发言时每次都要对一条消息回复的麻烦（不过如果同时被多人私聊的话小心撞车）
+
 ## 安装 (Installation)
 
 ### 安装准备 (Preparation)
@@ -51,7 +54,9 @@ python main.py
 ## 使用 (Usage)
 
 ### 回复 (Reply)
-直接回复机器人转发过来的消息即可回复，支持文字、贴纸、图片、文件、音频和视频
+直接**回复**机器人转发过来的消息即可回复给对方，支持文字、贴纸、图片、文件、音频和视频
+
+\* 如果直接向机器人发送消息，则默认会回复给最近一次向私聊机器人发送消息的用户，省去了在连续聊天发言时每次都要对一条消息回复的麻烦（不过如果同时被多人私聊的话小心撞车）
 
 Reply directly to the message forwarded by the robot to reply. You can reply text, sticker, photo, file, audio, voice and video.
 
